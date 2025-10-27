@@ -2,12 +2,17 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
 */
-// FIX: Import Modality for specifying image response type.
 import { GoogleGenAI, Modality } from "@google/genai";
 import type { GenerateContentResponse } from "@google/genai";
 
-// FIX: Use process.env.API_KEY and initialize GoogleGenAI as per guidelines, removing invalid `import.meta.env`.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Fix: Use process.env.API_KEY as per the guidelines. This also resolves the TypeScript error.
+const API_KEY = process.env.API_KEY;
+if (!API_KEY) {
+  // This error will be thrown during the build process or in the browser console if the key is not set.
+  throw new Error("Missing Google Gemini API Key. Please ensure the API_KEY environment variable is set.");
+}
+
+const ai = new GoogleGenAI({ apiKey: API_KEY });
 
 
 // --- Helper Functions ---
@@ -51,7 +56,6 @@ async function callGeminiWithRetry(imagePart: object, textPart: object): Promise
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
         try {
-            // FIX: Add responseModalities config to ensure an image is returned for image editing tasks.
             return await ai.models.generateContent({
                 model: 'gemini-2.5-flash-image',
                 contents: { parts: [imagePart, textPart] },
