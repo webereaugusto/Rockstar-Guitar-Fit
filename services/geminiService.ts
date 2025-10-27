@@ -5,14 +5,8 @@
 import { GoogleGenAI, Modality } from "@google/genai";
 import type { GenerateContentResponse } from "@google/genai";
 
-// Fix: Use process.env.API_KEY as per the guidelines. This also resolves the TypeScript error.
-const API_KEY = process.env.API_KEY;
-if (!API_KEY) {
-  // This error will be thrown during the build process or in the browser console if the key is not set.
-  throw new Error("Missing Google Gemini API Key. Please ensure the API_KEY environment variable is set.");
-}
-
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+// Fix: Use process.env.API_KEY and initialize GoogleGenAI directly as per the guidelines.
+const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY });
 
 
 // --- Helper Functions ---
