@@ -2,16 +2,12 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
 */
-import { GoogleGenAI } from "@google/genai";
+// FIX: Import Modality for specifying image response type.
+import { GoogleGenAI, Modality } from "@google/genai";
 import type { GenerateContentResponse } from "@google/genai";
 
-const API_KEY = process.env.API_KEY;
-
-if (!API_KEY) {
-  throw new Error("API_KEY environment variable is not set");
-}
-
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+// FIX: Use process.env.API_KEY and initialize GoogleGenAI as per guidelines, removing invalid `import.meta.env`.
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 
 // --- Helper Functions ---
@@ -55,9 +51,13 @@ async function callGeminiWithRetry(imagePart: object, textPart: object): Promise
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
         try {
+            // FIX: Add responseModalities config to ensure an image is returned for image editing tasks.
             return await ai.models.generateContent({
                 model: 'gemini-2.5-flash-image',
                 contents: { parts: [imagePart, textPart] },
+                config: {
+                    responseModalities: [Modality.IMAGE],
+                },
             });
         } catch (error) {
             console.error(`Error calling Gemini API (Attempt ${attempt}/${maxRetries}):`, error);
