@@ -94,7 +94,7 @@ export async function generateGuitarImage(imageDataUrl: string, prompt: string, 
   const [, mimeType, base64Data] = match;
 
     const imagePart = {
-        inlineData: { mimeType, data: base64Data },
+        inlineData: { mimeType, data: base64Data }, 
     };
 
     // --- First attempt with the original prompt ---
